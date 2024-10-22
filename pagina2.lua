@@ -26,11 +26,11 @@ function scene:create(event)
     )
 
     nextButton:addEventListener("tap", function()
-        composer.gotoScene("pagina3")
+        composer.gotoScene("pagina3", "fade")
     end)
 
     previousButton:addEventListener("tap", function()
-        composer.gotoScene("capa")
+        composer.gotoScene("capa", "fade")
     end)
 
     objects:insert(title)
