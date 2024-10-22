@@ -68,6 +68,13 @@ function scene:create(event)
     objects:insert(largeButton)
 end
 
+function scene:show(event)
+    local currentScene = composer.getSceneName("current")
+
+    renderPreviousButton(currentScene)
+end
+
 scene:addEventListener("create", scene)
+scene:addEventListener("show", scene)
 
 return scene
