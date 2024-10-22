@@ -34,16 +34,6 @@ function scene:create(event)
     largeButton.y = CONSTANTS.height - 100
     largeButton.x = CONSTANTS.width / 2
 
-    local nextButton = display.newImage(
-        "next.png",
-        CONSTANTS.width - 60,
-        CONSTANTS.height - 75
-    )
-
-    nextButton:addEventListener("tap", function()
-        composer.gotoScene("pagina2")
-    end)
-
     local title = display.newText({
         text = "Evidências da evolução, especiação, tempo geológico e paleontológico.",
         x = CONSTANTS.width / 2 - 110,
@@ -74,7 +64,6 @@ function scene:create(event)
     objects:insert(title)
     objects:insert(description)
     objects:insert(largeButton)
-    objects:insert(nextButton)
 end
 
 scene:addEventListener("create", scene)
