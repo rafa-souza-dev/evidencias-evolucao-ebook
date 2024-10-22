@@ -4,7 +4,7 @@ local scene = composer.newScene()
 
 function scene:create(event)
     local title = display.newText({
-        text = "Página 2", -- Adicione um título aqui
+        text = "Página 2",
         x = CONSTANTS.width / 2,
         y = 100,
         font = native.systemFontBold,
