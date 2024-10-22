@@ -25,6 +25,7 @@ local function criarBotaoLarge()
 end
 
 function scene:create(event)
+    local objects = self.view
     local capa = display.newImage( "capa.png" )
     capa.y = CONSTANTS.height / 3
     capa.x = CONSTANTS.width / 2
@@ -32,6 +33,16 @@ function scene:create(event)
     local largeButton = criarBotaoLarge()
     largeButton.y = CONSTANTS.height - 100
     largeButton.x = CONSTANTS.width / 2
+
+    local nextButton = display.newImage(
+        "next.png",
+        CONSTANTS.width - 60,
+        CONSTANTS.height - 75
+    )
+
+    nextButton:addEventListener("tap", function()
+        composer.gotoScene("pagina2")
+    end)
 
     local title = display.newText({
         text = "Evidências da evolução, especiação, tempo geológico e paleontológico.",
@@ -54,18 +65,16 @@ function scene:create(event)
     })
 
     local function onLargeButtonTap(event)
-        print("Botão clicado!")
         composer.gotoScene("pagina2", "fade")
     end
 
     largeButton:addEventListener("tap", onLargeButtonTap)
 
-    local objects = self.view
-
     objects:insert(capa)
     objects:insert(title)
     objects:insert(description)
     objects:insert(largeButton)
+    objects:insert(nextButton)
 end
 
 scene:addEventListener("create", scene)
