@@ -1,4 +1,5 @@
 local composer = require "composer"
+local SoundControl = require "components.SoundControl"
 
 local scene = composer.newScene()
 
@@ -58,14 +59,31 @@ function scene:create(event)
         composer.gotoScene("pagina2", "fade")
     end
 
-    largeButton:addEventListener("tap", onLargeButtonTap)
+    soundControlGroup = SoundControl.new({})
 
+    largeButton:addEventListener("tap", onLargeButtonTap)
     objects:insert(capa)
     objects:insert(title)
     objects:insert(description)
     objects:insert(largeButton)
+    objects:insert(soundControlGroup)
 end
 
 scene:addEventListener("create", scene)
 
 return scene
+
+-- soundControlGroup = SoundControl.new({
+--     isSoundOn = isSoundOn,
+--     iconX = CONSTANTS.width - 56,
+--     iconY = 56,
+--     onPress = function(event)
+--         toggleSound()
+--         local soundIcon = isSoundOn and "sound.png" or "sound-muted.png"
+--         soundControlGroup[1]:removeSelf()
+--         local newSoundIcon = display.newImage(soundIcon)
+--         newSoundIcon.x = soundControlGroup[1].x
+--         newSoundIcon.y = soundControlGroup[1].y
+--         soundControlGroup:insert(newSoundIcon)
+--     end
+-- })
