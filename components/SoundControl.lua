@@ -85,6 +85,7 @@ function SoundControl.new(options)
 
     function customButton:tap()
         updateSoundIcon(true)
+        options.onPressButtonCB()
     end
 
     customButton:addEventListener("tap", customButton)

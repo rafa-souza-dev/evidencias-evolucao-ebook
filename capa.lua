@@ -55,11 +55,19 @@ function scene:create(event)
         align = "left"
     })
 
+    local capaSound = audio.loadSound("capa.wav")
+
     local function onLargeButtonTap(event)
         composer.gotoScene("pagina2", "fade")
     end
 
-    soundControlGroup = SoundControl.new({})
+    soundControlGroup = SoundControl.new({
+        isSoundOn = false,
+        onPressButtonCB = function()
+            print(capaSound)
+            audio.play(capaSound)
+        end
+    })
 
     largeButton:addEventListener("tap", onLargeButtonTap)
     objects:insert(capa)
@@ -72,18 +80,3 @@ end
 scene:addEventListener("create", scene)
 
 return scene
-
--- soundControlGroup = SoundControl.new({
---     isSoundOn = isSoundOn,
---     iconX = CONSTANTS.width - 56,
---     iconY = 56,
---     onPress = function(event)
---         toggleSound()
---         local soundIcon = isSoundOn and "sound.png" or "sound-muted.png"
---         soundControlGroup[1]:removeSelf()
---         local newSoundIcon = display.newImage(soundIcon)
---         newSoundIcon.x = soundControlGroup[1].x
---         newSoundIcon.y = soundControlGroup[1].y
---         soundControlGroup:insert(newSoundIcon)
---     end
--- })
