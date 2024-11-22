@@ -12,4 +12,4 @@ CONSTANTS = {
     height=1024
 }
 
-composer.gotoScene("capa", "fade")
+composer.gotoScene("pagina3", "fade")

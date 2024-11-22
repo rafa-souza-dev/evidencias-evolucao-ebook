@@ -41,7 +41,8 @@ function scene:create(event)
         text = "Página 2",
         x = 50,
         y = 24,
-        fontSize = 14
+        fontSize = 14,
+        font = native.systemFontBold
     })
 
     local title = display.newText({
@@ -64,10 +65,10 @@ Abaixo vemos uma ilustração das principais espécies que foram responsáveis p
 Instruções: Você pode tocar no botão “Pressione para avançar” e verá a imagem atual do animal evoluindo para outro animal, exibindo a cada vez uma espécie mais recente da transição de aquáticos para terrestres. Você verá que o conteúdo abaixo do animal também irá mudar. Ao chegar no último animal, é possível tocar em “Pressione para reiniciar”, para que volte ao primeiro animal.
         ]],
         x = 370,
-        y = title.y + 210,
+        y = title.y + 240,
         width = 695,
         font = native.systemFontRegular,
-        fontSize = 12,
+        fontSize = 14,
         align = "justify"
     })
 
