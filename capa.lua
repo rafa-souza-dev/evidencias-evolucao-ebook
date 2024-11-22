@@ -2,6 +2,42 @@ local composer = require "composer"
 local SoundControl = require "components.SoundControl"
 
 local scene = composer.newScene()
+local capaSound = audio.loadSound("capa.mp3")
+local soundChannel
+local isSoundOn = false
+
+local function playOrRestartSound()
+    if soundChannel and audio.isChannelActive(soundChannel) then
+        audio.stop(soundChannel)
+    end
+    soundChannel = audio.play(capaSound)
+end
+
+local function pauseSound()
+    if soundChannel and audio.isChannelActive(soundChannel) then
+        audio.pause(soundChannel)
+    end
+end
+
+local function resumeSound()
+    if soundChannel and audio.isChannelPaused(soundChannel) then
+        audio.resume(soundChannel)
+    else
+        playOrRestartSound()
+    end
+end
+
+local function onLargeButtonTap(event)
+    pauseSound()
+    composer.gotoScene("pagina2", "fade")
+end
+
+local soundControlGroup = SoundControl.new({
+    isSoundOn = isSoundOn,
+    onPressButtonCB = playOrRestartSound,
+    pauseSound = pauseSound,
+    resumeSound = resumeSound
+})
 
 local function criarBotaoLarge()
     local largura = 388
@@ -55,43 +91,6 @@ function scene:create(event)
         align = "left"
     })
 
-    local capaSound = audio.loadSound("capa.mp3")
-    local soundChannel
-
-    local function playOrRestartSound()
-        if soundChannel and audio.isChannelActive(soundChannel) then
-            audio.stop(soundChannel)
-        end
-        soundChannel = audio.play(capaSound)
-    end
-
-    local function pauseSound()
-        if soundChannel and audio.isChannelActive(soundChannel) then
-            audio.pause(soundChannel)
-            print("Áudio pausado")
-        end
-    end
-
-    local function resumeSound()
-        if soundChannel and audio.isChannelPaused(soundChannel) then
-            audio.resume(soundChannel)
-            print("Áudio retomado")
-        else
-            playOrRestartSound()
-        end
-    end
-
-    local function onLargeButtonTap(event)
-        composer.gotoScene("pagina2", "fade")
-    end
-
-    soundControlGroup = SoundControl.new({
-        isSoundOn = false,
-        onPressButtonCB = playOrRestartSound,
-        pauseSound = pauseSound,
-        resumeSound = resumeSound
-    })
-
     largeButton:addEventListener("tap", onLargeButtonTap)
     objects:insert(capa)
     objects:insert(title)
@@ -100,6 +99,11 @@ function scene:create(event)
     objects:insert(soundControlGroup)
 end
 
+function scene:show(event)
+    isSoundOn = false
+end
+
+scene:addEventListener("show", scene)
 scene:addEventListener("create", scene)
 
 return scene
