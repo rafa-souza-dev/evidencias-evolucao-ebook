@@ -55,7 +55,31 @@ function scene:create(event)
         align = "left"
     })
 
-    local capaSound = audio.loadSound("capa.wav")
+    local capaSound = audio.loadSound("capa.mp3")
+    local soundChannel
+
+    local function playOrRestartSound()
+        if soundChannel and audio.isChannelActive(soundChannel) then
+            audio.stop(soundChannel)
+        end
+        soundChannel = audio.play(capaSound)
+    end
+
+    local function pauseSound()
+        if soundChannel and audio.isChannelActive(soundChannel) then
+            audio.pause(soundChannel)
+            print("Áudio pausado")
+        end
+    end
+
+    local function resumeSound()
+        if soundChannel and audio.isChannelPaused(soundChannel) then
+            audio.resume(soundChannel)
+            print("Áudio retomado")
+        else
+            playOrRestartSound()
+        end
+    end
 
     local function onLargeButtonTap(event)
         composer.gotoScene("pagina2", "fade")
@@ -63,10 +87,9 @@ function scene:create(event)
 
     soundControlGroup = SoundControl.new({
         isSoundOn = false,
-        onPressButtonCB = function()
-            print(capaSound)
-            audio.play(capaSound)
-        end
+        onPressButtonCB = playOrRestartSound,
+        pauseSound = pauseSound,
+        resumeSound = resumeSound
     })
 
     largeButton:addEventListener("tap", onLargeButtonTap)

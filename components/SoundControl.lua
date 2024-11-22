@@ -79,6 +79,12 @@ function SoundControl.new(options)
     group:insert(textoBotao)
 
     function group.soundIconTap()
+        if options.isSoundOn then
+            options.pauseSound()
+        else
+            options.resumeSound()
+        end
+
         options.isSoundOn = not options.isSoundOn
         updateSoundIcon()
     end
