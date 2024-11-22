@@ -103,7 +103,46 @@ function scene:show(event)
     isSoundOn = false
 end
 
-scene:addEventListener("show", scene)
+function scene:show(event)
+    local phase = event.phase
+    local sceneGroup = self.view
+
+    if phase == "will" then
+        if soundControlGroup then
+            soundControlGroup:removeSelf()
+            soundControlGroup = nil
+        end
+
+        soundControlGroup = SoundControl.new({
+            isSoundOn = isSoundOn,
+            onPressButtonCB = playOrRestartSound,
+            pauseSound = pauseSound,
+            resumeSound = resumeSound
+        })
+
+        sceneGroup:insert(soundControlGroup)
+    end
+end
+
+function scene:destroy(event)
+    if soundControlGroup then
+        soundControlGroup:removeSelf()
+        soundControlGroup = nil
+    end
+
+    if soundChannel then
+        audio.stop(soundChannel)
+        soundChannel = nil
+    end
+
+    if capaSound then
+        audio.dispose(capaSound)
+        capaSound = nil
+    end
+end
+
 scene:addEventListener("create", scene)
+scene:addEventListener("show", scene)
+scene:addEventListener("destroy", scene)
 
 return scene
