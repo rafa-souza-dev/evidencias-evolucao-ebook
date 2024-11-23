@@ -63,7 +63,7 @@ end
 
 function scene:create(event)
     local objects = self.view
-    local capa = display.newImage( "capa.png" )
+    local capa = display.newImage( "assets/capa.png" )
     capa.y = CONSTANTS.height / 3
     capa.x = CONSTANTS.width / 2
 

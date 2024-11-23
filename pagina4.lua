@@ -72,13 +72,13 @@ Instruções: Chacoalhe o seu dispositivo para enviar o pólen de uma flor até 
     })
 
     local nextButton = display.newImage(
-        "next.png",
+        "assets/next.png",
         CONSTANTS.width - 60,
         CONSTANTS.height - 75
     )
 
     local previousButton = display.newImage(
-        "previous.png",
+        "assets/previous.png",
         60,
         CONSTANTS.height - 75
     )

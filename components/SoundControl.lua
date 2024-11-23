@@ -26,7 +26,7 @@ function SoundControl.new(options)
             end
     
             options.isSoundOn = true
-            local newIcon = "sound.png"
+            local newIcon = "assets/sound.png"
     
             if group.soundIconImage then
                 group.soundIconImage:removeSelf()
@@ -43,7 +43,7 @@ function SoundControl.new(options)
             return nil
         end
 
-        local newIcon = options.isSoundOn and "sound.png" or "sound-muted.png"
+        local newIcon = options.isSoundOn and "assets/sound.png" or "assets/sound-muted.png"
 
         if group.soundIconImage then
             group.soundIconImage:removeSelf()
@@ -58,7 +58,7 @@ function SoundControl.new(options)
         group:insert(1, group.soundIconImage)
     end
 
-    group.soundIconImage = display.newImage(options.isSoundOn and "sound.png" or "sound-muted.png")
+    group.soundIconImage = display.newImage(options.isSoundOn and "assets/sound.png" or "assets/sound-muted.png")
     group.soundIconImage.x = options.iconX
     group.soundIconImage.y = options.iconY
     group:insert(group.soundIconImage)

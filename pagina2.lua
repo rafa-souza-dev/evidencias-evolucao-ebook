@@ -73,13 +73,13 @@ Instruções: Você pode tocar no botão “Pressione para avançar” e verá a
     })
 
     local nextButton = display.newImage(
-        "next.png",
+        "assets/next.png",
         CONSTANTS.width - 60,
         CONSTANTS.height - 75
     )
 
     local previousButton = display.newImage(
-        "previous.png",
+        "assets/previous.png",
         60,
         CONSTANTS.height - 75
     )

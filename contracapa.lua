@@ -59,7 +59,7 @@ end
 function scene:create(event)
     local objects = self.view
 
-    local contracapa = display.newImage( "contracapa.png" )
+    local contracapa = display.newImage( "assets/contracapa.png" )
     contracapa.y = CONSTANTS.height / 1.8
     contracapa.x = CONSTANTS.width / 2
 
@@ -97,7 +97,7 @@ function scene:create(event)
     largeButton.x = CONSTANTS.width / 2
 
     local previousButton = display.newImage(
-        "previous.png",
+        "assets/previous.png",
         60,
         CONSTANTS.height - 75
     )

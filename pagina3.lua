@@ -73,13 +73,13 @@ Instruções: Você pode arrastar o homem que está segurando a pá até o monte
     })
 
     local nextButton = display.newImage(
-        "next.png",
+        "assets/next.png",
         CONSTANTS.width - 60,
         CONSTANTS.height - 75
     )
 
     local previousButton = display.newImage(
-        "previous.png",
+        "assets/previous.png",
         60,
         CONSTANTS.height - 75
     )

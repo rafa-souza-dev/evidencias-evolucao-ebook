@@ -77,13 +77,13 @@ Idades: A subdivisão mais fina, que representa intervalos de tempo específicos
     })
 
     local nextButton = display.newImage(
-        "next.png",
+        "assets/next.png",
         CONSTANTS.width - 60,
         CONSTANTS.height - 75
     )
 
     local previousButton = display.newImage(
-        "previous.png",
+        "assets/previous.png",
         60,
         CONSTANTS.height - 75
     )
