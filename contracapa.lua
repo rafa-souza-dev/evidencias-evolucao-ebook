@@ -93,7 +93,7 @@ function scene:create(event)
     })
 
     local largeButton = criarBotaoLarge()
-    largeButton.y = CONSTANTS.height - 100
+    largeButton.y = CONSTANTS.height - 87
     largeButton.x = CONSTANTS.width / 2
 
     local previousButton = display.newImage(
