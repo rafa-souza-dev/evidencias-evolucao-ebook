@@ -100,10 +100,6 @@ function scene:create(event)
 end
 
 function scene:show(event)
-    isSoundOn = false
-end
-
-function scene:show(event)
     local phase = event.phase
     local sceneGroup = self.view
 
