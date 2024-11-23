@@ -2,7 +2,7 @@ local composer = require "composer"
 local SoundControl = require "components.SoundControl"
 
 local scene = composer.newScene()
-local capaSound = audio.loadSound("pagina2.mp3")
+local capaSound = audio.loadSound("audios/pagina2.mp3")
 local soundChannel
 local isSoundOn = false
 
