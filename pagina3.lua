@@ -6,6 +6,67 @@ local capaSound = audio.loadSound("audios/pagina3.mp3")
 local soundChannel
 local isSoundOn = false
 
+local physics = require("physics")
+physics.start()
+
+local centerX = display.contentCenterX
+local centerY = display.contentCenterY
+
+local man = display.newImageRect("assets/man_with_shovel.png", 199, 269)
+man.x = centerX + 220
+man.y = centerY + 200
+physics.addBody(man, "dynamic", {isSensor = true})
+man.gravityScale = 0
+
+local dirt = display.newImageRect("assets/dirt_pile.png", 275, 239)
+dirt.x = centerX - 150
+dirt.y = centerY + 200
+physics.addBody(dirt, "static", {isSensor = true})
+
+local function dragMan(event)
+    local phase = event.phase
+
+    if phase == "began" then
+        display.currentStage:setFocus(man)
+        man.touchOffsetX = event.x - man.x
+        man.touchOffsetY = event.y - man.y
+    elseif phase == "moved" then
+        man.x = event.x - man.touchOffsetX
+        man.y = event.y - man.touchOffsetY
+    elseif phase == "ended" or phase == "cancelled" then
+        display.currentStage:setFocus(nil)
+    end
+    return true
+end
+
+man:addEventListener("touch", dragMan)
+
+local function onCollision(event)
+    if event.phase == "began" then
+        if event.object1 == man and event.object2 == dirt or
+           event.object2 == man and event.object1 == dirt then
+
+            dirt:removeSelf()
+            dirt = display.newImageRect("assets/dirt_replaced.png", 291, 96)
+            dirt.x = centerX - 150
+            dirt.y = centerY + 215
+            physics.addBody(dirt, "static", {isSensor = true})
+
+            man:removeSelf()
+            man = display.newImageRect("assets/man_with_shovel.png", 199, 269)
+            man.x = centerX + 220
+            man.y = centerY + 200
+            physics.addBody(man, "dynamic", {isSensor = true})
+            man.gravityScale = 0
+
+            man:addEventListener("touch", dragMan)
+        end
+    end
+end
+
+
+Runtime:addEventListener("collision", onCollision)
+
 local function playOrRestartSound()
     if soundChannel and audio.isChannelActive(soundChannel) then
         audio.stop(soundChannel)
@@ -100,6 +161,8 @@ Instruções: Você pode arrastar o homem que está segurando a pá até o monte
     objects:insert(soundControlGroup)
     objects:insert(nextButton)
     objects:insert(previousButton)
+    objects:insert(man)
+    objects:insert(dirt)
 end
 
 function scene:show(event)
