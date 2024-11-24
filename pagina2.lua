@@ -205,12 +205,20 @@ Instruções: Você pode tocar no botão “Pressione para avançar” e verá a
     largeButton.y = CONSTANTS.height - 70
     largeButton.x = CONSTANTS.width / 2
 
+    local function resetState()
+        currentFishDisplay:removeSelf()
+        currentFishDisplay = nil
+        currentIndex = 1
+    end
+
     nextButton:addEventListener("tap", function()
+        resetState()
         pauseSound()
         composer.gotoScene("pagina3", "fade")
     end)
 
     previousButton:addEventListener("tap", function()
+        resetState()
         pauseSound()
         composer.gotoScene("capa", "fade")
     end)
@@ -232,6 +240,10 @@ function scene:show(event)
     local sceneGroup = self.view
 
     if phase == "will" then
+        if not currentFishDisplay then
+            currentFishDisplay = createFishDisplay(fishes[currentIndex])
+        end
+
         if soundControlGroup then
             soundControlGroup:removeSelf()
             soundControlGroup = nil
