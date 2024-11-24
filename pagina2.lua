@@ -34,6 +34,72 @@ local soundControlGroup = SoundControl.new({
     resumeSound = resumeSound
 })
 
+local fishes = {
+    { title = 'animal 1', description = 'descrição do animal 1', image = 'assets/animal1.png' },
+    { title = 'animal 2', description = 'descrição do animal 2', image = 'assets/animal2.png' },
+}
+
+local currentIndex = 1
+
+local function createFishDisplay(fish)
+    local group = display.newGroup()
+
+    local image = display.newImageRect(fish.image, 300, 300)
+    image.x = display.contentCenterX
+    image.y = display.contentCenterY - 50
+
+    local title = display.newText({
+        text = fish.title,
+        x = display.contentCenterX,
+        y = display.contentCenterY + 180,
+        fontSize = 24
+    })
+
+    local description = display.newText({
+        text = fish.description,
+        x = display.contentCenterX,
+        y = display.contentCenterY + 220,
+        fontSize = 16,
+        width = display.contentWidth - 40,
+        align = "center"
+    })
+
+    group:insert(image)
+    group:insert(title)
+    group:insert(description)
+
+    return group
+end
+
+local currentFishDisplay = createFishDisplay(fishes[currentIndex])
+
+local function showNextFish()
+    if currentIndex < #fishes then
+        transition.to(currentFishDisplay, { alpha = 0, time = 500, onComplete = function()
+            currentFishDisplay:removeSelf()
+            currentFishDisplay = nil
+
+            currentIndex = currentIndex + 1
+
+            currentFishDisplay = createFishDisplay(fishes[currentIndex])
+            currentFishDisplay.alpha = 0
+            transition.to(currentFishDisplay, { alpha = 1, time = 500 })
+        end })
+    end
+end
+
+local button = display.newRect(display.contentCenterX, display.contentHeight - 50, 200, 50)
+button:setFillColor(0, 0.5, 1)
+
+local buttonText = display.newText({
+    text = "Próximo animal",
+    x = display.contentCenterX,
+    y = display.contentHeight - 50,
+    fontSize = 18
+})
+
+button:addEventListener("tap", showNextFish)
+
 function scene:create(event)
     local objects = self.view
 
@@ -100,6 +166,8 @@ Instruções: Você pode tocar no botão “Pressione para avançar” e verá a
     objects:insert(soundControlGroup)
     objects:insert(nextButton)
     objects:insert(previousButton)
+    objects:insert(currentFishDisplay)
+    objects:insert(button)
 end
 
 function scene:show(event)
