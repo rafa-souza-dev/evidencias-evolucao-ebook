@@ -23,47 +23,105 @@ dirt.x = centerX - 150
 dirt.y = centerY + 200
 physics.addBody(dirt, "static", {isSensor = true})
 
+local currentAnimation = 0
+local dirtAsRemoved = false
+
 local function dragMan(event)
     local phase = event.phase
 
     if phase == "began" then
         display.currentStage:setFocus(man)
-        man.touchOffsetX = event.x - man.x
-        man.touchOffsetY = event.y - man.y
+
+        if not man.touchOffsetX then
+            man.touchOffsetX = event.x - man.x
+        end
+        if not man.touchOffsetY then
+            man.touchOffsetY = event.y - man.y
+        end
+
     elseif phase == "moved" then
         man.x = event.x - man.touchOffsetX
         man.y = event.y - man.touchOffsetY
+
     elseif phase == "ended" or phase == "cancelled" then
         display.currentStage:setFocus(nil)
+        man.touchOffsetX = nil
+        man.touchOffsetY = nil
     end
+
     return true
 end
+
 
 man:addEventListener("touch", dragMan)
 
 local function onCollision(event)
-    if event.phase == "began" then
+    if currentAnimation == 0 then
         if event.object1 == man and event.object2 == dirt or
-           event.object2 == man and event.object1 == dirt then
-
+        event.object2 == man and event.object1 == dirt then
             dirt:removeSelf()
-            dirt = display.newImageRect("assets/dirt_replaced.png", 291, 96)
-            dirt.x = centerX - 150
-            dirt.y = centerY + 215
-            physics.addBody(dirt, "static", {isSensor = true})
 
-            man:removeSelf()
-            man = display.newImageRect("assets/man_with_shovel.png", 199, 269)
-            man.x = centerX + 220
-            man.y = centerY + 200
-            physics.addBody(man, "dynamic", {isSensor = true})
-            man.gravityScale = 0
+            timer.performWithDelay(1, function()
+                dirt = display.newImageRect("assets/dirt_replaced.png", 291, 96)
+                dirt.x = centerX - 150
+                dirt.y = centerY + 215
+                physics.addBody(dirt, "static", {isSensor = true})
 
-            man:addEventListener("touch", dragMan)
+                man:removeSelf()
+                man = display.newImageRect("assets/man_with_shovel.png", 199, 269)
+                man.x = centerX + 220
+                man.y = centerY + 200
+                physics.addBody(man, "dynamic", {isSensor = true})
+                man.gravityScale = 0
+
+                man:addEventListener("touch", dragMan)
+
+                currentAnimation = currentAnimation + 1
+            end)
+
+        end
+    end
+
+    if currentAnimation == 1 then
+        if event.object1 == man and event.object2 == dirt or
+        event.object2 == man and event.object1 == dirt then
+            dirt:removeSelf()
+
+            timer.performWithDelay(1, function()
+                dirt = display.newImageRect("assets/lab.png", 285, 183)
+                dirt.x = centerX + 220
+                dirt.y = centerY + 200
+                physics.addBody(dirt, "static", {isSensor = true})
+
+                man:removeSelf()
+                man = display.newImageRect("assets/fossil.png", 212, 237)
+                man.x = centerX - 210
+                man.y = centerY + 215
+                physics.addBody(man, "dynamic", {isSensor = true})
+                man.gravityScale = 0
+
+                man:addEventListener("touch", dragMan)
+
+                currentAnimation = currentAnimation + 1
+            end)
+        end
+    end
+
+    if currentAnimation == 2 then
+        if event.object1 == man and event.object2 == dirt or
+        event.object2 == man and event.object1 == dirt then
+            dirt:removeSelf()
+            dirtAsRemoved = true
+
+            timer.performWithDelay(1, function()
+                man:removeSelf()
+                man = display.newImageRect("assets/final-fossil.png", 673, 237)
+                man.x = centerX
+                man.y = centerY + 220
+            end)
         end
     end
 end
-
 
 Runtime:addEventListener("collision", onCollision)
 
@@ -96,6 +154,21 @@ local soundControlGroup = SoundControl.new({
 })
 
 function scene:create(event)
+    if not man then
+        man = display.newImageRect("assets/man_with_shovel.png", 199, 269)
+        man.x = centerX + 220
+        man.y = centerY + 200
+        physics.addBody(man, "dynamic", {isSensor = true})
+        man.gravityScale = 0
+    end
+
+    if not dirt then
+        dirt = display.newImageRect("assets/dirt_pile.png", 275, 239)
+        dirt.x = centerX - 150
+        dirt.y = centerY + 200
+        physics.addBody(dirt, "static", {isSensor = true})
+    end
+
     local objects = self.view
 
     local pageNumber = display.newText({
@@ -145,12 +218,26 @@ Instruções: Você pode arrastar o homem que está segurando a pá até o monte
         CONSTANTS.height - 75
     )
 
+    local function resetImages()
+        if man then
+            man:removeSelf()
+            man = nil
+        end
+
+        if not dirtAsRemoved then
+            dirt:removeSelf()
+            dirt = nil
+        end
+    end
+
     nextButton:addEventListener("tap", function()
+        resetImages()
         pauseSound()
         composer.gotoScene("pagina4", "fade")
     end)
 
     previousButton:addEventListener("tap", function()
+        resetImages()
         pauseSound()
         composer.gotoScene("pagina2", "fade")
     end)
@@ -170,6 +257,26 @@ function scene:show(event)
     local sceneGroup = self.view
 
     if phase == "will" then
+        currentAnimation = 0
+
+        if not man then
+            man = display.newImageRect("assets/man_with_shovel.png", 199, 269)
+            man.x = centerX + 220
+            man.y = centerY + 200
+            physics.addBody(man, "dynamic", {isSensor = true})
+            man.gravityScale = 0
+
+            man:addEventListener("touch", dragMan)
+
+        end
+
+        if not dirt or dirtAsRemoved then
+            dirt = display.newImageRect("assets/dirt_pile.png", 275, 239)
+            dirt.x = centerX - 150
+            dirt.y = centerY + 200
+            physics.addBody(dirt, "static", {isSensor = true})
+        end
+
         if soundControlGroup then
             soundControlGroup:removeSelf()
             soundControlGroup = nil
@@ -201,7 +308,10 @@ function scene:destroy(event)
         audio.dispose(capaSound)
         capaSound = nil
     end
+
+    currentAnimation = 0
 end
+
 
 scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
