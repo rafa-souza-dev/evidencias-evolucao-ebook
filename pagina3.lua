@@ -31,27 +31,21 @@ local function dragMan(event)
 
     if phase == "began" then
         display.currentStage:setFocus(man)
-
-        if not man.touchOffsetX then
-            man.touchOffsetX = event.x - man.x
-        end
-        if not man.touchOffsetY then
-            man.touchOffsetY = event.y - man.y
-        end
-
+        man.touchOffsetX = event.x - man.x
+        man.touchOffsetY = event.y - man.y
     elseif phase == "moved" then
-        man.x = event.x - man.touchOffsetX
-        man.y = event.y - man.touchOffsetY
+        if man.touchOffsetX then
+            man.x = event.x - man.touchOffsetX
+        end
 
+        if man.touchOffsetY then
+            man.y = event.y - man.touchOffsetY
+        end
     elseif phase == "ended" or phase == "cancelled" then
         display.currentStage:setFocus(nil)
-        man.touchOffsetX = nil
-        man.touchOffsetY = nil
     end
-
     return true
 end
-
 
 man:addEventListener("touch", dragMan)
 
