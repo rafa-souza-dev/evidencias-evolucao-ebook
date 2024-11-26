@@ -24,7 +24,6 @@ dirt.y = centerY + 200
 physics.addBody(dirt, "static", {isSensor = true})
 
 local currentAnimation = 0
-local dirtAsRemoved = false
 
 local function dragMan(event)
     local phase = event.phase
@@ -54,6 +53,7 @@ local function onCollision(event)
         if event.object1 == man and event.object2 == dirt or
         event.object2 == man and event.object1 == dirt then
             dirt:removeSelf()
+            dirt = nil
 
             timer.performWithDelay(1, function()
                 dirt = display.newImageRect("assets/dirt_replaced.png", 291, 96)
@@ -80,6 +80,7 @@ local function onCollision(event)
         if event.object1 == man and event.object2 == dirt or
         event.object2 == man and event.object1 == dirt then
             dirt:removeSelf()
+            dirt = nil
 
             timer.performWithDelay(1, function()
                 dirt = display.newImageRect("assets/lab.png", 285, 183)
@@ -105,7 +106,7 @@ local function onCollision(event)
         if event.object1 == man and event.object2 == dirt or
         event.object2 == man and event.object1 == dirt then
             dirt:removeSelf()
-            dirtAsRemoved = true
+            dirt = nil
 
             timer.performWithDelay(1, function()
                 man:removeSelf()
@@ -147,22 +148,23 @@ local soundControlGroup = SoundControl.new({
     resumeSound = resumeSound
 })
 
+local function resetImages()
+    if man then
+        pcall(function()
+            man:removeSelf()
+            man = nil
+        end)
+    end
+
+    if dirt then
+        pcall(function()
+            dirt:removeSelf()
+            dirt = nil
+        end)
+    end
+end
+
 function scene:create(event)
-    if not man then
-        man = display.newImageRect("assets/man_with_shovel.png", 199, 269)
-        man.x = centerX + 220
-        man.y = centerY + 200
-        physics.addBody(man, "dynamic", {isSensor = true})
-        man.gravityScale = 0
-    end
-
-    if not dirt then
-        dirt = display.newImageRect("assets/dirt_pile.png", 275, 239)
-        dirt.x = centerX - 150
-        dirt.y = centerY + 200
-        physics.addBody(dirt, "static", {isSensor = true})
-    end
-
     local objects = self.view
 
     local pageNumber = display.newText({
@@ -212,18 +214,6 @@ Instruções: Você pode arrastar o homem que está segurando a pá até o monte
         CONSTANTS.height - 75
     )
 
-    local function resetImages()
-        if man then
-            man:removeSelf()
-            man = nil
-        end
-
-        if not dirtAsRemoved then
-            dirt:removeSelf()
-            dirt = nil
-        end
-    end
-
     nextButton:addEventListener("tap", function()
         resetImages()
         pauseSound()
@@ -261,10 +251,9 @@ function scene:show(event)
             man.gravityScale = 0
 
             man:addEventListener("touch", dragMan)
-
         end
 
-        if not dirt or dirtAsRemoved then
+        if not dirt then
             dirt = display.newImageRect("assets/dirt_pile.png", 275, 239)
             dirt.x = centerX - 150
             dirt.y = centerY + 200
