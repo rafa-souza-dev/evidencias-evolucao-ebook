@@ -6,6 +6,97 @@ local capaSound = audio.loadSound("audios/pagina4.mp3")
 local soundChannel
 local isSoundOn = false
 
+local flor1 = display.newImageRect("assets/flor1.png", 225, 225)
+flor1.x = display.contentWidth * 0.2
+flor1.y = display.contentCenterY + 200
+
+local flor2 = display.newImageRect("assets/flor2.png", 208, 242)
+flor2.x = display.contentWidth * 0.8
+flor2.y = display.contentCenterY + 200
+
+local finalFlor = display.newImageRect("assets/final-flor.png", 386, 276)
+finalFlor.x = display.contentCenterX
+finalFlor.y = display.contentCenterY + 200
+finalFlor.alpha = 0
+
+local polen = display.newImageRect("assets/polen.png", 374, 123)
+polen.x = flor1.x
+polen.y = flor1.y
+polen.alpha = 0
+
+local function revealFinalFlor()
+    transition.to(flor1, {
+        time = 500,
+        alpha = 0,
+        onComplete = function()
+            flor1:removeSelf()
+            flor1 = nil
+        end
+    })
+
+    transition.to(flor2, {
+        time = 500,
+        alpha = 0,
+        onComplete = function()
+            flor2:removeSelf()
+            flor2 = nil
+        end
+    })
+
+    transition.to(polen, {
+        time = 500,
+        alpha = 0,
+        onComplete = function()
+            polen:removeSelf()
+            polen = nil
+        end
+    })
+
+    transition.to(finalFlor, {
+        time = 1500,
+        alpha = 1
+    })
+end
+
+local function playPolen()
+    transition.to(polen, {
+        time = 1700,
+        x = flor2.x,
+        alpha = 1,
+        onComplete = function()
+            revealFinalFlor()
+        end
+    })
+end
+
+local function onShake(event)
+    if event.isShake and flor1 and flor2 then
+        playPolen()
+    end
+end
+
+local function resetState()
+    if flor1 then
+        flor1:removeSelf()
+        flor1 = nil
+    end
+
+    if flor2 then
+        flor2:removeSelf()
+        flor2 = nil
+    end
+
+    if finalFlor then
+        finalFlor:removeSelf()
+        finalFlor = nil
+    end
+
+    if polen then
+        polen:removeSelf()
+        polen = nil
+    end
+end
+
 local function playOrRestartSound()
     if soundChannel and audio.isChannelActive(soundChannel) then
         audio.stop(soundChannel)
@@ -33,6 +124,8 @@ local soundControlGroup = SoundControl.new({
     pauseSound = pauseSound,
     resumeSound = resumeSound
 })
+
+Runtime:addEventListener("accelerometer", onShake)
 
 function scene:create(event)
     local objects = self.view
@@ -84,11 +177,13 @@ Instruções: Chacoalhe o seu dispositivo para enviar o pólen de uma flor até 
     )
 
     nextButton:addEventListener("tap", function()
+        resetState()
         pauseSound()
         composer.gotoScene("pagina5", "fade")
     end)
 
     previousButton:addEventListener("tap", function()
+        resetState()
         pauseSound()
         composer.gotoScene("pagina3", "fade")
     end)
@@ -99,6 +194,10 @@ Instruções: Chacoalhe o seu dispositivo para enviar o pólen de uma flor até 
     objects:insert(soundControlGroup)
     objects:insert(nextButton)
     objects:insert(previousButton)
+    objects:insert(flor1)
+    objects:insert(flor2)
+    objects:insert(finalFlor)
+    objects:insert(polen)
 end
 
 function scene:show(event)
@@ -106,6 +205,32 @@ function scene:show(event)
     local sceneGroup = self.view
 
     if phase == "will" then
+        if not flor1 then
+            flor1 = display.newImageRect("assets/flor1.png", 225, 225)
+            flor1.x = display.contentWidth * 0.2
+            flor1.y = display.contentCenterY + 200
+        end
+
+        if not flor2 then
+            flor2 = display.newImageRect("assets/flor2.png", 208, 242)
+            flor2.x = display.contentWidth * 0.8
+            flor2.y = display.contentCenterY + 200
+        end
+
+        if not finalFlor then
+            finalFlor = display.newImageRect("assets/final-flor.png", 386, 276)
+            finalFlor.x = display.contentCenterX
+            finalFlor.y = display.contentCenterY + 200
+            finalFlor.alpha = 0
+        end
+
+        if not polen then
+            polen = display.newImageRect("assets/polen.png", 374, 123)
+            polen.x = flor1.x
+            polen.y = flor1.y
+            polen.alpha = 0
+        end
+
         if soundControlGroup then
             soundControlGroup:removeSelf()
             soundControlGroup = nil
